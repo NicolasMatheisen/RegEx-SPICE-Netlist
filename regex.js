@@ -5,6 +5,14 @@ function SPICENetlistValidator(UserInput) {
     Regel 3: Syntaxanalyse der Bauteile
     */
    const errors = [];
+   //trim() entfernt Leerzeichen von beiden Seiten der Zeichenkette
+   //split('\n') entfernt die Anweisung einer neuen Zeile (Enter oder new line)
+   const Zeile = UserInput.trim().split('\n');
 
+   const Titel = Zeile[0].trim();
+   //testet ob der Titel mit einem Bauteil beginnt (/i ist egal ob die Buchstaben groß oder klein geschrrieben werden)
+   if(/^[RCL]/i.test(Titel)){
+        errors.push("Die erste Zeile muss ein Titel sein, darf nicht mit einem Bauteil gebinnen");
+   }
    return errors;
 }
