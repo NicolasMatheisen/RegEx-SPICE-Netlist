@@ -16,3 +16,17 @@ function SPICENetlistValidator(UserInput) {
    }
    return errors;
 }
+
+function überprüfen() {
+    const UserInput = document.getElementById('UserInput').value;
+    const errors = SPICENetlistValidator(UserInput);
+    const Verifizierungsergebnis = document.getElementById('Verifizierungsergebnis');
+
+    if(errors.length === 0) {
+        Verifizierungsergebnis.textContent ='Netlist ist gültig';
+    }
+    else 
+    {
+        Verifizierungsergebnis.innerHTML = errors.join('<br>');
+    }
+};
