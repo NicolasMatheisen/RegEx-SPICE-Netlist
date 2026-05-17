@@ -13,14 +13,12 @@ function SPICENetlistValidator(UserInput) {
 
     const rules = [
         {
-            condition: 'Erste Zeile ist ein Titel',
             error: 'Darf nicht mit einem Bauteil beginnen',
-            valide: !/^[RCL]/i.test(title)
+            valide: /^[RCL]/i.test(title)
         },
         {
-            condition: 'Die letzte Zeile ist .end',
             error: 'Die SPICE Netlist muss mit .end abgeschlossen werden',
-            valide: /^\.end$/i.test(lastLine)
+            valide: !/^\.end$/i.test(lastLine)
         }
     ];
 
