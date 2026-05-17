@@ -8,10 +8,8 @@ function SPICENetlistValidator(UserInput) {
     //trim() entfernt Leerzeichen von beiden Seiten der Zeichenkette
     //split('\n') entfernt die Anweisung einer neuen Zeile (Enter oder new line)
     const lines = UserInput.trim().split('\n');
-    const title = lines[0].trim();
-    const lastLine = (lines[lines.length - 1]).trim();
 
-        const rules = [
+    const rules = [
         {
             error: 'Darf nicht mit einem Bauteil beginnen',
             validate: (lines) => !/^[RCL]/i.test(lines[0])
