@@ -4,17 +4,27 @@ function SPICENetlistValidator(UserInput) {
     Regel 2: Eingabe muss mit .end beendet werden
     Regel 3: Syntaxanalyse der Bauteile
     */
-   const errors = [];
-   //trim() entfernt Leerzeichen von beiden Seiten der Zeichenkette
-   //split('\n') entfernt die Anweisung einer neuen Zeile (Enter oder new line)
-   const line = UserInput.trim().split('\n');
 
-   const title = line[0].trim();
-   //testet ob der Titel mit einem Bauteil beginnt (/i ist egal ob die Buchstaben groß oder klein geschrrieben werden)
-   if(/^[RCL]/i.test(title)){
-        errors.push("Die erste Zeile muss ein Titel sein, darf nicht mit einem Bauteil gebinnen");
-   }
-   return errors;
+    //trim() entfernt Leerzeichen von beiden Seiten der Zeichenkette
+    //split('\n') entfernt die Anweisung einer neuen Zeile (Enter oder new line)
+    const line = UserInput.trim().split('\n');
+    const title = line[0].trim();
+    const lastLine = (line[line.length - 1]).trim();
+
+    const rules = [
+        {
+            condition: 'Erste Zeile ist ein Titel',
+            error: 'Darf nicht mit einem Bauteil beginnen',
+            valide: !/^[RCL]/i.test(title)
+        },
+        {
+            condition: 'Die letzte Zeile ist .end',
+            error: 'Die SPICE Netlist muss mit .end abgeschlossen werden',
+            valide: /^\.end$/i.test(lastLine)
+        }
+    ];
+
+    return rules;
 }
 
 function check() {
