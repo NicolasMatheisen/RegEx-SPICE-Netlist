@@ -7,22 +7,39 @@ function SPICENetlistValidator(UserInput) {
 
     //trim() entfernt Leerzeichen von beiden Seiten der Zeichenkette
     //split('\n') entfernt die Anweisung einer neuen Zeile (Enter oder new line)
-    const line = UserInput.trim().split('\n');
-    const title = line[0].trim();
-    const lastLine = (line[line.length - 1]).trim();
+    const lines = UserInput.trim().split('\n');
+    const title = lines[0].trim();
+    const lastLine = (lines[lines.length - 1]).trim();
 
-    const rules = [
+        const rules = [
         {
             error: 'Darf nicht mit einem Bauteil beginnen',
-            valide: /^[RCL]/i.test(title)
+            validate: (lines) => !/^[RCL]/i.test(lines[0])
         },
         {
             error: 'Die SPICE Netlist muss mit .end abgeschlossen werden',
-            valide: !/^\.end$/i.test(lastLine)
+            validate: (lines) => /^\.end$/i.test(lines.at(-1))
+        },
+        {
+            error: 'JedesBaupteil muss folgende Syntax haben: label node1 node2 value',
+            validate: (lines) => {
+                const value = '[0-9]+(?:\\.[0-9]+)?(?:f|p|n|u|m|k|meg|g|t)?';
+
+
+                const componentRegex = {
+                    R: new RegExp(`^R[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:Ω|ohm)?$`, 'i'),
+                    C: new RegExp(`^C[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:F)?$`, 'i'),
+                    L: new RegExp(`^L[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:H)?$`, 'i'),
+                };
+
+                return lines;
+            }
         }
     ];
 
-    return rules;
+    return rules
+        .filter(rule => !rule.validate(lines))
+        .map(rule => rule.error);
 }
 
 function check() {
