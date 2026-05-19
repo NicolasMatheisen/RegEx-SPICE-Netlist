@@ -13,7 +13,7 @@ function SPICENetlistValidator(UserInput) {
     const rules = [
         {
             error: 'Darf nicht mit einem Bauteil beginnen',
-            validate: (lines) => !/^[RCL]/i.test(lines[0])
+            validate: (lines) => !/^[RCLVID]/i.test(lines[0])
         },
         {
             error: 'Die SPICE Netlist muss mit .end abgeschlossen werden',
@@ -27,10 +27,13 @@ function SPICENetlistValidator(UserInput) {
                     R: new RegExp(`^R[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:Ω|ohm)?$`, 'i'),
                     C: new RegExp(`^C[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:F)?$`, 'i'),
                     L: new RegExp(`^L[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:H)?$`, 'i'),
+                    V: new RegExp(`^V[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:V)?$`, 'i'),
+                    I: new RegExp(`^I[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}(?:A)?$`, 'i'),
+                    D: new RegExp(`^D[A-Za-z0-9_]+\\s+\\S+\\s+\\S+\\s+${value}$`, 'i'),
                 };
                 return lines.every(line => {
                     const firstChar = line.trim()[0]?.toUpperCase();
-                    if (['R', 'C', 'L'].includes(firstChar)) {
+                    if (['R', 'C', 'L', 'V', 'I', 'D'].includes(firstChar)) {
                         return componentRegex[firstChar].test(line.trim());
                     }
                     return true;
@@ -41,7 +44,7 @@ function SPICENetlistValidator(UserInput) {
             error: 'Die Schaltung muss mindestens einen 0 Node haben.',
             validate: (lines) => {
                 return lines.some(line => {
-                    if (/^[RCL]/i.test(line.trim())) {
+                    if (/^[RCLVID]/i.test(line.trim())) {
                         const parts = line.trim().split(/\s+/);
                         return parts[1] === '0' || parts[2] === '0';
                     }
